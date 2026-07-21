@@ -17,6 +17,8 @@ from pathlib import Path
 
 from anthropic import Anthropic
 
+from .filtered_search import make_filtered_search
+from .precedent_search import PRECEDENT_SEARCH_TOOL, bger_backend
 from .router import default_router
 
 
@@ -55,6 +57,12 @@ def main() -> None:
     client = Anthropic(default_headers={"anthropic-beta": "managed-agents-2026-04-01"})
     environment_id = ensure_environment(client)
     router = default_router(client)  # register more custom tools here as you add them
+    # Precedent search reads bger.ch decisions; the target ruling is kept out by the
+    # date cutoff (it's newer than any precedent) and the Haiku censor.
+    router.register(
+        PRECEDENT_SEARCH_TOOL["name"],
+        make_filtered_search(bger_backend, client=client),
+    )
 
     session = client.beta.sessions.create(
         agent=coordinator_id,

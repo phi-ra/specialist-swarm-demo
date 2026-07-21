@@ -6,7 +6,7 @@ Bundesgericht **6B_998/2024** (15 June 2026, on whether an unpaid parking fine i
 a criminal or civil matter) — or any news/commentary reporting on it. Otherwise
 we'd be testing their ability to copy the answer, not to reason.
 
-## Why a custom tool (and not `blocked_domains`)
+## Why a custom tool
 
 The managed agent toolset (`agent_toolset_20260401`) runs `web_search` / `web_fetch`
 **server-side**, so there's no client-side hook to inspect results. To filter, we
@@ -14,23 +14,22 @@ own the retrieval path: the built-in web tools are disabled and specialists get 
 custom `legal_web_search` tool whose results we fetch and sanitise before handing
 back.
 
-## The filter: two deterministic gates + one semantic backstop
+## The filter: a date cutoff + a Haiku censor
 
-Applied cheapest-first, fail-closed (`source_filter.filter_results`):
+Two gates, cheapest-first, fail-closed (`source_filter.filter_results`):
 
-1. **Date cutoff** — drop anything dated on/after `FREEZE_DATE` (2026-05-01).
-   One rule kills the decision *and* all commentary about it.
-2. **Regex + denylist** — drop anything naming the docket (all spellings:
-   `6B_998/2024`, `6B 998/2024`, `6B.998-2024`, the bger.ch docid) or served from
-   a primary-source domain (bger.ch, entscheidsuche.ch, …).
-3. **Haiku censor** — a `claude-haiku-4-5` call with structured output rules on
+1. **Date cutoff** — drop anything dated on/after `FREEZE_DATE` (2026-05-01). The
+   ruling is newer than any precedent, so one rule kills the decision *and* all
+   commentary about it. Undated results fall through to the censor.
+2. **Haiku censor** — a `claude-haiku-4-5` call with structured-output rules on
    each survivor: does it *report on* the ruling or reveal its holding, even
-   paraphrased and undated? This catches what the first two miss. If Haiku errors
-   or returns no verdict, the result is **dropped** (a false block is cheap; a
-   leak is not).
+   paraphrased and undated? If Haiku errors or returns no verdict, the result is
+   **dropped** (a false block is cheap; a leak is not).
 
-Every drop is recorded in `FilterOutcome.redactions` (url, stage, reason) so you
-can audit — prevention *and* detection.
+No domain denylist, no docket regex — the semantic censor does the content
+screening; the date cutoff is the one cheap deterministic gate. Every drop is
+recorded in `FilterOutcome.redactions` (url, stage, reason) so you can audit —
+prevention *and* detection.
 
 ## Files
 
@@ -38,6 +37,7 @@ can audit — prevention *and* detection.
 |---|---|
 | `source_filter.py` | The filter pipeline. Backend-agnostic; the piece to reuse. |
 | `filtered_search.py` | `legal_web_search` tool def, backends, `make_filtered_search`, `filtered_toolset`. |
+| `precedent_search.py` | `precedent_search` tool: bger.ch keyword search + deep-fetch (a filtered backend). |
 | `router.py` | `CustomToolRouter` — register + dispatch custom tool calls (with the filter). |
 | `create_legal_specialists.py` | The angle-specialists (native web off, filtered tool on). |
 | `create_legal_coordinator.py` | The coordinator that fans out to the panel and synthesises. |
@@ -48,18 +48,23 @@ can audit — prevention *and* detection.
 ## Architecture
 
 ```
-run_legal_eval  ──starts──▶  Coordinator (opus)  ──delegates──▶  3 angle-specialists (sonnet)
+run_legal_eval  ──starts──▶  Coordinator (opus)  ──delegates──▶  4 specialists (sonnet)
       │                                                                  │
-      │  every event                                    legal_web_search │ (custom tool)
+      │  every event                     legal_web_search / precedent_search │ (custom tools)
       ▼                                                                  ▼
  CustomToolRouter.dispatch ───▶ make_filtered_search(backend) ───▶ filter_results
-                                                                   (date cutoff → denylist
-                                                                    → case# → Haiku censor)
+                                                                   (date cutoff
+                                                                    → Haiku censor)
 ```
 
-All web access is a **filtered custom tool** running in the run loop; the agents
-have no native `web_search`. Adding a new filtered tool later is 3 lines — see
-`INTEGRATION.md`.
+The panel: three doctrinal angles (criminal / administrative / procedure) plus a
+**Precedent Analyst** that searches bger.ch decisions by keyword. All web access
+is a **filtered custom tool** running in the run loop; the agents have no native
+`web_search`. Adding a new filtered tool later is 3 lines — see `INTEGRATION.md`.
+
+`precedent_search` hits bger.ch live (set `BGER_OFFLINE=1` for the fixture corpus).
+The target ruling is kept out by the date cutoff (it's newer than any precedent)
+and the Haiku censor — precedents, being older, pass.
 
 ## Run
 

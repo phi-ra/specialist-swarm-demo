@@ -5,17 +5,19 @@ Goal: keep the specialists from ever seeing the recent Bundesgericht ruling
 (6B_998/2024, decided 15 June 2026) — or any news / commentary that reports on
 it — so their legal reasoning is tested, not their ability to copy the answer.
 
-Two independent gates, applied cheapest-first:
+Two gates, applied cheapest-first:
 
-  1. Date cutoff   (deterministic)  — drop anything dated on/after FREEZE_DATE.
-  2. Regex prescreen (deterministic) — drop anything naming the case explicitly.
-  3. Haiku censor  (semantic)       — drop anything that *reports on* the ruling
-                                       or reveals its holding, even paraphrased.
+  1. Date cutoff  (deterministic) — drop anything dated on/after FREEZE_DATE.
+                                     The ruling is newer than any precedent, so
+                                     one rule blocks it and all commentary on it.
+  2. Haiku censor (semantic)      — drop anything that *reports on* the ruling or
+                                     reveals its holding, even paraphrased and
+                                     undated.
 
-The censor is the backstop for what the first two miss (a blog discussing the
-holding without a date or the docket number). It fails CLOSED: if Haiku errors
-or is unsure, the result is dropped. For an eval, a false drop is cheap; a leak
-is not.
+No domain denylist, no docket-number regex — a semantic censor is what screens
+content; the date cutoff is the one cheap deterministic gate. The censor fails
+CLOSED: if Haiku errors or is unsure, the result is dropped. For an eval, a false
+drop is cheap; a leak is not.
 
 This module is backend-agnostic: it filters `SearchResult`s, wherever they came
 from. See filtered_search.py for how results are fetched and how this plugs into
@@ -25,8 +27,6 @@ the managed-agents custom tool.
 from __future__ import annotations
 
 import json
-import os
-import re
 from dataclasses import dataclass, field
 from datetime import date
 from typing import Iterable
@@ -50,26 +50,6 @@ PROTECTED_TOPIC = (
     "non-payment of a parking fine (Parkbusse / Ordnungsbusse) is a criminal "
     "matter or a civil/administrative matter under Swiss law — and, more broadly, "
     "any source that states or strongly implies HOW that specific case was decided."
-)
-
-# Case-number spellings seen in the wild: 6B_998/2024, 6B 998/2024, 6B.998/2024,
-# 6B_998-2024, "BGer 6B_998/2024", the bger.ch docid, etc.
-_CASE_NUMBER_RE = re.compile(
-    r"6\s*b[\s._-]*998[\s._/-]*2024",
-    re.IGNORECASE,
-)
-# The bger.ch highlight docid format: aza://15-06-2026-6B_998-2024
-_DOCID_RE = re.compile(r"6b[_-]998[_-]2024", re.IGNORECASE)
-
-# Domains that only ever serve the primary decision or close mirrors. Belt-and-
-# suspenders on top of the semantic censor; NOT the main line of defence.
-_BLOCKED_DOMAINS = (
-    "bger.ch",
-    "servat.unibe.ch",       # BGE mirror
-    "entscheidsuche.ch",
-    "swisslex.ch",
-    "weblaw.ch",
-    "jusletter.weblaw.ch",
 )
 
 HAIKU_MODEL = "claude-haiku-4-5"
@@ -102,17 +82,8 @@ class FilterOutcome:
 
 
 # ---------------------------------------------------------------------------
-# Gate 1 + 2: deterministic
+# Gate 1: date cutoff (deterministic)
 # ---------------------------------------------------------------------------
-
-def _domain_blocked(url: str) -> bool:
-    u = url.lower()
-    return any(d in u for d in _BLOCKED_DOMAINS)
-
-
-def _names_the_case(text: str) -> bool:
-    return bool(_CASE_NUMBER_RE.search(text) or _DOCID_RE.search(text))
-
 
 def _fails_date_cutoff(result: SearchResult) -> bool:
     # Undated results are NOT dropped here — many statute pages are undated.
@@ -121,7 +92,7 @@ def _fails_date_cutoff(result: SearchResult) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# Gate 3: Haiku semantic censor
+# Gate 2: Haiku semantic censor
 # ---------------------------------------------------------------------------
 
 _CENSOR_SCHEMA = {
@@ -237,24 +208,16 @@ def filter_results(
     client: Anthropic | None = None,
     fail_closed: bool = True,
 ) -> FilterOutcome:
-    """Run the full pipeline. Returns allowed results + an audit trail."""
+    """Run the pipeline (date cutoff -> Haiku censor). Returns allowed + audit trail."""
     client = client or Anthropic()
     outcome = FilterOutcome()
 
     survivors: list[tuple[int, SearchResult]] = []
     for idx, r in enumerate(results):
-        blob = f"{r.title}\n{r.url}\n{r.snippet}"
-
         if _fails_date_cutoff(r):
             outcome.redactions.append(
                 Redaction(r.url, "date_cutoff", f"published {r.published} >= {FREEZE_DATE}")
             )
-            continue
-        if _domain_blocked(r.url):
-            outcome.redactions.append(Redaction(r.url, "denylist", "blocked domain"))
-            continue
-        if _names_the_case(blob):
-            outcome.redactions.append(Redaction(r.url, "case_number", "names 6B_998/2024"))
             continue
         survivors.append((idx, r))
 

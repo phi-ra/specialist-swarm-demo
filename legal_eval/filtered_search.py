@@ -188,6 +188,7 @@ def make_filtered_search(
     *,
     client: Anthropic | None = None,
     query_key: str = "query",
+    **filter_kwargs,
 ) -> Callable[[dict], str]:
     """
     Wrap ANY search backend into a custom-tool handler whose results are
@@ -199,6 +200,7 @@ def make_filtered_search(
 
         handler = make_filtered_search(my_backend)
 
+    Extra keyword args are forwarded to `filter_results` (e.g. `fail_closed`).
     The returned handler takes the tool's input dict and returns result text.
     """
     client = client or Anthropic()
@@ -207,7 +209,7 @@ def make_filtered_search(
         query = (tool_input or {}).get(query_key, "")
         print(f"  [filtered search] {query!r}", flush=True)
         raw = backend(query)
-        outcome = filter_results(raw, client=client)
+        outcome = filter_results(raw, client=client, **filter_kwargs)
         return format_outcome(outcome)
 
     return handler

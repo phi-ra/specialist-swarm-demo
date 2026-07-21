@@ -16,6 +16,11 @@ from .filtered_search import (
     run_legal_web_search,
     search_backend,
 )
+from .precedent_search import (
+    PRECEDENT_SEARCH_TOOL,
+    bger_backend,
+    parse_bger_results,
+)
 from .router import CustomToolRouter, default_router
 
 __all__ = [
@@ -33,6 +38,10 @@ __all__ = [
     "make_filtered_search",
     "run_legal_web_search",
     "search_backend",
+    # precedent search
+    "PRECEDENT_SEARCH_TOOL",
+    "bger_backend",
+    "parse_bger_results",
     # dispatch
     "CustomToolRouter",
     "default_router",

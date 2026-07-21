@@ -14,6 +14,7 @@ from datetime import date
 
 from . import source_filter as sf
 from .source_filter import SearchResult, filter_results
+from .precedent_search import bger_backend, parse_bger_results, _FIXTURE_RESULTS_HTML
 
 
 _SENTINEL_CLIENT = object()  # never used once _haiku_censor is stubbed
@@ -49,18 +50,12 @@ def _fake_censor(client, candidates, *, fail_closed=True):
     return out
 
 
-def test_deterministic_gates() -> None:
-    # date cutoff
+def test_date_cutoff() -> None:
     assert sf._fails_date_cutoff(_corpus()[2]) is True   # NZZ, 2026-06-16
+    assert sf._fails_date_cutoff(_corpus()[3]) is True   # decision, 2026-06-15
     assert sf._fails_date_cutoff(_corpus()[0]) is False  # OBG, 2018
     assert sf._fails_date_cutoff(_corpus()[4]) is False  # undated -> falls through
-    # denylist + case number
-    assert sf._domain_blocked("https://www.bger.ch/x") is True
-    assert sf._domain_blocked("https://www.fedlex.admin.ch/x") is False
-    for variant in ["6B_998/2024", "6B 998/2024", "6B.998/2024", "BGer 6B_998-2024"]:
-        assert sf._names_the_case(variant), variant
-    assert not sf._names_the_case("6B_997/2024")
-    print("  ok  deterministic gates")
+    print("  ok  date cutoff")
 
 
 def test_full_pipeline() -> None:
@@ -101,8 +96,47 @@ def test_fail_closed() -> None:
     print("  ok  fail-closed on censor failure")
 
 
+def test_precedent_parser() -> None:
+    results = parse_bger_results(_FIXTURE_RESULTS_HTML)
+    dockets = {r.title for r in results}
+    assert "Bundesgericht 6B_1123/2018" in dockets
+    assert "Bundesgericht 6B_998/2024" in dockets   # target is present in raw results
+    # docid gives us date + a real decision URL
+    target = next(r for r in results if "998" in r.title)
+    assert target.published == date(2026, 6, 15)
+    assert "show_document" in target.url and "6B_998-2024" in target.url
+    print("  ok  precedent parser extracts docket + date + url")
+
+
+def test_precedent_filtering() -> None:
+    import os
+    os.environ["BGER_OFFLINE"] = "1"
+    raw = bger_backend("Parkbusse Ordnungsbusse")
+
+    # Precedents pass; the target ruling is dropped by the date cutoff (newer than
+    # any precedent). The censor is the backstop for anything that slips the date.
+    sf._haiku_censor, real = _fake_censor, sf._haiku_censor
+    try:
+        outcome = filter_results(raw, client=_SENTINEL_CLIENT)
+    finally:
+        sf._haiku_censor = real
+        del os.environ["BGER_OFFLINE"]
+
+    allowed = {r.title for r in outcome.allowed}
+    blocked = {(r.url, r.stage) for r in outcome.redactions}
+
+    # precedents survive; the target ruling does not
+    assert "Bundesgericht 6B_1123/2018" in allowed
+    assert "Bundesgericht 6B_242/2020" in allowed
+    assert not any("998" in t for t in allowed), f"target leaked: {allowed}"
+    assert any("6B_998-2024" in u for u, _ in blocked)
+    print("  ok  precedent search returns precedents, drops the protected ruling")
+
+
 if __name__ == "__main__":
-    test_deterministic_gates()
+    test_date_cutoff()
     test_full_pipeline()
     test_fail_closed()
+    test_precedent_parser()
+    test_precedent_filtering()
     print("\nAll source-filter tests passed.")

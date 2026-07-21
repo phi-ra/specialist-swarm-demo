@@ -21,9 +21,11 @@ from pathlib import Path
 from anthropic import Anthropic
 
 from .filtered_search import filtered_toolset
+from .precedent_search import PRECEDENT_SEARCH_TOOL
 
 
 # Each specialist attacks the question from a different legal angle.
+# `extra_tools` = custom tools beyond legal_web_search (all still filtered).
 SPECIALISTS = [
     {
         "key": "criminal_law",
@@ -54,6 +56,21 @@ SPECIALISTS = [
             "implies about the matter's legal character. Use `legal_web_search`."
         ),
     },
+    {
+        "key": "precedent",
+        "name": "Precedent Analyst",
+        "system": (
+            "You find and analyse PRECEDENT decisions of the Swiss Federal Supreme "
+            "Court (Bundesgericht) relevant to how unpaid parking fines are "
+            "classified. Use `precedent_search` to search decisions by keyword "
+            "(e.g. 'Parkbusse', 'Ordnungsbusse', 'Übertretung Strassenverkehr') and "
+            "read into the top hits. For each relevant precedent, give the docket "
+            "number, date, the holding, and how it bears on the question. If a "
+            "controlling recent decision seems to be missing, say so — do not "
+            "speculate about how it was decided."
+        ),
+        "extra_tools": (PRECEDENT_SEARCH_TOOL,),
+    },
 ]
 
 
@@ -71,7 +88,7 @@ def main() -> None:
             name=spec["name"],
             model="claude-sonnet-4-6",
             system=spec["system"],
-            tools=filtered_toolset(),
+            tools=filtered_toolset(extra_tools=spec.get("extra_tools", ())),
             metadata={"track": "legal-eval", "role": spec["key"]},
         )
         ids[spec["key"]] = agent.id

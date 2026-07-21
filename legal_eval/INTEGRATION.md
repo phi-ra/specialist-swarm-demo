@@ -31,6 +31,11 @@ agent = client.beta.agents.create(
 
 ---
 
+> **Real worked example in the repo:** `precedent_search.py` + the "Precedent
+> Analyst" entry in `create_legal_specialists.py` + the `router.register(...)`
+> call in `run_legal_eval.py`. It searches bger.ch by keyword and reads into the
+> top hits — read those three spots to see Case B end to end.
+
 ## Case B: the new specialist needs a NEW custom search tool
 
 Example: a case-law database search. Three steps.
@@ -82,8 +87,11 @@ from legal_eval import make_filtered_search
 router.register("case_law_search", make_filtered_search(case_law_backend, client=client))
 ```
 
-That's it. Anything `case_law_backend` returns now passes the same two gates + the
-Haiku censor before the agent sees it, and every drop is logged.
+That's it. Anything `case_law_backend` returns now passes the date cutoff + the
+Haiku censor before the agent sees it, and every drop is logged. This works even
+for a backend that reads a primary source directly (e.g. `precedent_search` reads
+bger.ch, where the ruling lives) — the date cutoff keeps the target out because
+it's newer than any precedent, and the censor backstops the text.
 
 > If a tool's input field isn't called `query`, pass `query_key="..."` to
 > `make_filtered_search`.
@@ -101,8 +109,8 @@ no filter needed.
 
 ## Where the knobs live
 
-- **`FREEZE_DATE`, `PROTECTED_TOPIC`, denylist, case-number regex** — `source_filter.py`.
-  These define "the answer" being hidden. Change them per eval.
+- **`FREEZE_DATE`, `PROTECTED_TOPIC`** — `source_filter.py`. The date cutoff and
+  the censor's description of what to hide. Change them per eval.
 - **`fail_closed`** — `filter_results(..., fail_closed=True)` (default). Keep it True
   for eval integrity; a censor error drops the result rather than leaking.
 - **Backend selection** — `search_backend()` in `filtered_search.py` (Tavily vs.
