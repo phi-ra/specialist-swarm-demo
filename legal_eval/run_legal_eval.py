@@ -23,9 +23,34 @@ from .router import default_router
 
 
 QUESTION = (
-    "Under Swiss law, is the non-payment of a parking fine (Parkbusse) a criminal "
-    "matter or a civil/administrative matter? Run the full panel and give me a "
-    "single reasoned assessment."
+    "A parking case before the Swiss Federal Supreme Court (I. strafrechtliche "
+    "Abteilung, 5-judge panel). Facts: on 24 Dec 2021, A. parked in the car park "
+    "of the B. public swimming pool in Zurich (land owned by the City of Zurich) "
+    "without operating the parking meter or paying the parking fee. The lot is "
+    "posted with signs reproducing an audienzrichterliches Verbot (a court "
+    "prohibition order of 22 May 1980) forbidding the parking/placing of vehicles "
+    "on the area 'under threat of a police fine up to CHF 200', while permitting "
+    "pool visitors to park on marked spaces for max. 3 hours against payment of "
+    "the fee. A. was charged with 'Missachten eines gerichtlichen Verbots' "
+    "(disregarding a judicial prohibition). The Bezirksgericht Zurich (25 Aug "
+    "2023) ACQUITTED him, and the Obergericht Zurich CONFIRMED the acquittal (31 "
+    "Oct 2024). The Zurich prosecution (Oberstaatsanwaltschaft) now files a "
+    "Beschwerde in Strafsachen to the Federal Supreme Court, asking that the "
+    "acquittal be set aside and the case remanded for new judgment.\n\n"
+    "The core legal question: does parking without paying the fee fall UNDER the "
+    "court prohibition (so that non-payment is a punishable Missachtung eines "
+    "gerichtlichen Verbots), or is the prohibition aimed only at unauthorised "
+    "parking as such — meaning paid-parking/fee compliance is a separate "
+    "fee/administrative matter that cannot ground the criminal offence? Note the "
+    "sign both bans parking AND allows visitors to park for a fee.\n\n"
+    "Run the full panel and give a single reasoned assessment of WHO IS LIKELY TO "
+    "WIN — specifically HOW LIKELY the person who parked (A., the acquitted "
+    "respondent) is to WIN, i.e. that the prosecution's appeal is REJECTED and the "
+    "acquittal stands. Address: interpretation of the scope of the court "
+    "prohibition and the interplay with the fee regime; the principle of legality "
+    "(nulla poena, art. 1 StGB) and strict construction of penal prohibitions; the "
+    "Federal Court's power of review when the STATE appeals an acquittal; and give "
+    "a bottom-line likelihood that A. wins (low / moderate / high) with reasoning."
 )
 
 

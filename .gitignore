@@ -7,4 +7,10 @@ __pycache__/
 .coordinator_id
 .environment_id
 .last_session_id
+.legal_coordinator_id
+.legal_last_session_id
 outputs/
+
+# local data and conda environments
+data/
+.cenv*

@@ -1,0 +1,52 @@
+I'll convene the full panel now and run my own statutory research in parallel.Let me run a few more targeted searches while the panel works.The web search returns only generic stubs — I'll rely on the panel's doctrinal reasoning plus the statutory anchors (art. 258–260 ZPO, art. 1 StGB, art. 97/105 BGG). The four specialists are working. I'll end my turn and synthesise once their analyses arrive.Administrative/Civil-Law Angle has reported (assessing A.'s position as **strong**, though it mislabels the charge as Art. 292 StGB — the audienzrichterliches Verbot regime is actually the ZPO 258–260 / cantonal-predecessor track, a point I'll correct in synthesis). Waiting on the other three specialists before synthesising.Criminal-Law Angle has reported — notably, even when tasked with building the prosecution's best case, it self-rates the prosecution "moderate at best, realistically weak," and correctly flags that Art. 292 StGB is *not* the right hook (the Verbot carries its own self-contained Polizeibusse). Two reports in; awaiting Procedural Angle and Precedent Analyst.Procedural Angle reports A.'s procedural position as **strong** (double acquittal + Willkür-only review of the fact-heavy evidentiary findings + the legality principle constraining even free legal review). One caveat I'll reconcile: like the Civil agent, it leans on Art. 292 StGB's formal-threat requirement, whereas the audienzrichterliches Verbot actually carries its own sui generis Übertretung sanction (ZPO 258 / cantonal predecessor) — the formal-notice logic transposes but is not the same knockout. Awaiting the Precedent Analyst.All four specialists have reported. One housekeeping correction feeds the synthesis: the Precedent Analyst's specific docket numbers (6B_880/2013, 6B_384/2020, 6B_1007/2022, etc.) are — as it candidly flagged — **unverified and should be treated as non-existent for our purposes**; consistent with the nature of this question, there is no single controlling Federal Supreme Court judgment, and I rely on none. Here is the panel's synthesised assessment.
+
+---
+
+# Will A. win? Panel assessment
+
+**Bottom line: MODERATE-TO-HIGH likelihood that A. wins (acquittal upheld, appeal rejected) — roughly 60–70%.**
+
+## 1. What is actually charged (a framing correction)
+
+The offence is **not** Art. 292 StGB (two of my specialists drifted into it). "Missachten eines gerichtlichen Verbots" here is the *sui generis* Übertretung attached to an **allgemeines/audienzrichterliches Verbot** — historically the Zurich cantonal regime (ZPO/ZH 1976), today **Art. 258–260 ZPO**. Art. 260 ZPO punishes intentional violation *auf Antrag* (Antragsdelikt) with a Busse. Two structural limits flow from this and both favour A.:
+- A court prohibition may forbid only **widerrechtliche Störungen** — conduct the owner could independently enjoin under his exclusion right (Art. 641 Abs. 2 ZGB). It **crystallises an existing right; it cannot create new duties** (classic doctrine on the richterliches Verbot).
+- It is a property-**exclusion** instrument. It is not designed to secure a **monetary claim**.
+
+## 2. Scope of the prohibition × the fee regime — the decisive axis
+
+Two readings of the dual-message sign ("Parkieren verboten" + "Besucher gestattet, ≤3 h, gegen Gebühr"):
+
+- **Prosecution (conditional-permission):** payment is a *condition precedent* to the permission. No payment → no permitted status → the car sits under the ban → punishable Übertretung. *"Wer nicht zahlt, parkiert unbefugt."*
+- **Respondent (two-regime):** the ban targets **unauthorised parking as such** (non-visitors, unmarked spaces, >3 h). A visitor on a marked space within 3 h is **within the permitted category**; failure to pay is a **fee default** — a public-law *Benutzungsgebühr* (Kausalabgabe, Art. 5/164 BV) or a contractual *Parkvertrag* claim — enforced by **Betreibung / administrative means**, not Strafrecht.
+
+The two-regime reading is doctrinally cleaner: it does not conflate the **right to use** (status) with the **debt arising from use** (fee), and it respects that non-payment of a fee is not, by itself, a *widerrechtliche Störung* of the owner's property right. Swiss law channels fee non-payment to debt collection, not criminal sanction, absent an explicit Ordnungsbussen/penal norm — and the OBG does not create one for a municipal car-park fee. **Both cantonal instances adopted this reading.**
+
+## 3. Legality principle (Art. 1 StGB) — the multiplier for A.
+
+Art. 1 StGB (+ Art. 7 EMRK) commands the **Bestimmtheitsgebot**, **strict construction**, and the **Analogieverbot** (no extension to the accused's detriment); genuine ambiguity in a penal norm is resolved **in favorem rei**. A sign that in one breath forbids parking and in the next permits it is at least ambiguous as to whether *unpaid-but-otherwise-authorised* parking is criminal. Using a 1980 **ex parte** order to reach fee-evasion pushes toward prohibited analogy. This principle bites **even where the Federal Court reviews freely** — the court cannot cure the ambiguity by expanding the penal reach.
+
+## 4. Standard of review when the STATE appeals an acquittal
+
+- Standing of the Oberstaatsanwaltschaft is unproblematic (Art. 81 BGG); it bears a **qualified pleading burden** (Art. 42 Abs. 2, 106 Abs. 2 BGG).
+- **Facts / evidence:** bound unless **arbitrary** (Art. 97 Abs. 1 / 105 BGG); *in dubio pro reo* as a *Beweiswürdigungsregel* collapses into a **Willkür** standard against the appellant. A **double concordant acquittal** makes this bar very high.
+- **The catch for A.:** the *decisive* issue — the legal **scope** of the prohibition and its interplay with Art. 258/260 ZPO and Art. 1 StGB — is a **question of law reviewed freely**, so Willkür-deference does **not** shield the core point. A.'s protection there comes from the legality principle, not from deference.
+- Net effect: on the fact-laden sub-questions (what the sign said, Vorsatz, whether A. was a visitor on a marked space ≤3 h, the Strafantrag) A. is strongly protected by Willkür + double acquittal; on the pure legal question he must win on the merits — but the merits and the *in dubio* interpretive rule lean his way.
+
+## 5. Strongest counter-argument, and why it only partly bites
+
+The state's best shot is that the **conditional-permission reading is plain meaning, not analogy**: "gestattet gegen Gebühr" makes payment constitutive of the permission, so unpaid parking is simply the prohibited act — no Bestimmtheitsgebot problem, no fee/prohibition conflation. This is **respectable and non-frivolous** — and it is almost certainly why the case sits before a **5-judge panel** (Art. 20 Abs. 2 BGG signals a *question of principle*, i.e. the court means to set doctrine). It does **not** clearly prevail because it (a) fuses use-entitlement with payment-obligation against the grain of Swiss fee doctrine, (b) repurposes an exclusion instrument to collect money, and (c) still confronts a genuinely dual-message sign that Art. 1 StGB resolves for the accused. But it is strong enough to keep this out of "high/near-certain" territory.
+
+## 6. Open questions a court must still resolve
+
+1. Is "gegen Gebühr" a **constitutive condition** of the permission or a **severable debt**?
+2. May an Art. 258/260 ZPO Verbot validly forbid "parking without paying," or only *widerrechtliche Störungen* — and can it be used to **enforce a fee** at all?
+3. Does a **1980 cantonal-era ex parte** order still satisfy Art. 1 StGB / Art. 7 EMRK determinacy under the federal ZPO?
+4. Is the fee a **public-law Benutzungsgebühr** or contractual, and what enforcement channel exists?
+5. **Vorsatz** and valid **Strafantrag** by the City (Antragsdelikt).
+6. Allocation of **review standards** across the federal-law vs cantonal-law/fact sub-questions.
+
+## 7. Why "moderate-to-high," not "high"
+
+Pushing A. up: two reasoned acquittals; the clean two-regime doctrine; Art. 1 StGB's structural bias; the systemic channelling of fee non-payment to civil/administrative collection; Willkür-protection on all factual elements. Holding him back from near-certainty: the decisive issue is a **freely reviewable question of law**, so deference does not do the heavy lifting there; the conditional-permission reading is genuinely arguable; and the **5-judge composition** shows the Federal Court itself regards the point as open and worth a leading decision — a court does not convene a Fünferbesetzung to rubber-stamp an obvious result. A published decision could equally cut the other way, though the legality-principle pull makes a *pro-accused* clarifying rule the more natural outcome.
+
+**Estimate: A. is more likely than not to prevail and see the acquittal confirmed — call it ~60–70%.** The single biggest swing factor is whether the panel treats "gegen Gebühr" as constitutive of the permission (state wins) or as a severable fee debt (A. wins); everything else in the doctrinal and procedural architecture tilts toward A.
