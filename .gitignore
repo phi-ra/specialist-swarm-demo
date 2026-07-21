@@ -1,10 +1,19 @@
-.venv/
+# Python
 __pycache__/
 *.pyc
+.venv/
+venv/
 .env
-.legal_specialist_ids.json
-.specialist_ids.json
-.coordinator_id
+
+# Local runtime state written by the scripts (per-workspace, not source)
 .environment_id
+.coordinator_id
+.specialist_ids.json
+.legal_specialist_ids.json
+.skill_ids.json
 .last_session_id
+.last_search_session_id
+.claude
+
+# Generated deliverables
 outputs/
