@@ -23,6 +23,7 @@ SKILL_TO_SPECIALIST = {
     "pricing-playbook": "pricing",
     "legal-checklist":  "legal",
     "competitive-intel": "competitive",
+    "fedlex-search":    "search",  # tax-dispute: Swiss federal law lookup
 }
 
 
@@ -51,6 +52,12 @@ def main() -> None:
         skill_dir = Path("skills") / skill_name
         if not (skill_dir / "SKILL.md").exists():
             print(f"  Skipping {skill_name} — no SKILL.md found")
+            continue
+
+        # Skip skills whose target specialist wasn't created in this workspace.
+        # Lets the tax-dispute and deal-desk rosters be provisioned independently.
+        if specialist_key not in specialist_ids:
+            print(f"  Skipping {skill_name} — specialist '{specialist_key}' not in .specialist_ids.json")
             continue
 
         display_title = skill_name.replace("-", " ").title()
