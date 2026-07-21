@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.legal_specialist_ids.json
+.specialist_ids.json
+.coordinator_id
+.environment_id
+.last_session_id
+outputs/
