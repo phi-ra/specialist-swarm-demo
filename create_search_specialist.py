@@ -91,8 +91,17 @@ def main() -> None:
         system=spec["system"],
         tools=[
             {"type": "agent_toolset_20260401"},
-            # Expose the Fedlex MCP tools to this agent.
-            {"type": "mcp_toolset", "mcp_server_name": FEDLEX_MCP_NAME},
+            # Expose the Fedlex MCP tools to this agent, and auto-approve them.
+            # The connector is a read-only public legal-lookup server, so there's
+            # nothing to gate — without always_allow the session pauses on every
+            # tool call with stop_reason `requires_action` waiting for a human.
+            {
+                "type": "mcp_toolset",
+                "mcp_server_name": FEDLEX_MCP_NAME,
+                "default_config": {
+                    "permission_policy": {"type": "always_allow"},
+                },
+            },
         ],
         mcp_servers=[
             {
